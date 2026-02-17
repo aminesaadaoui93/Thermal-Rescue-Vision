@@ -4,6 +4,7 @@ from image_resolution_unifier import unify_image_resolutions
 from yolo_annotation_from_label_images import create_yolo_annotations_from_label_images
 import os
 import shutil
+from tqdm import tqdm
 
 
 def create_flir_adas_final_data_set(new_traning_size=2000, new_test_size=200):
@@ -43,8 +44,8 @@ def create_flir_adas_final_data_set(new_traning_size=2000, new_test_size=200):
         new_categories_id_map=mapping,
         num_images=new_test_size,
     )
-    yolo_tranning_output_dir = os.path.join(new_tranning_dir, "yolo_format")
-    yolo_testing_output_dir = os.path.join(new_test_dir, "yolo_format")
+    yolo_tranning_output_dir = os.path.join(new_tranning_dir, "yolo_annotations")
+    yolo_testing_output_dir = os.path.join(new_test_dir, "yolo_annotations")
 
     convert_coco_to_yolo(
         coco_annotation_path=os.path.join(new_tranning_dir, "coco.json"),
@@ -182,18 +183,18 @@ def create_final_falling_human_data_set():
     original_training_dir = os.path.join(original__dir, "train")
     original_testing_dir = os.path.join(original__dir, "validation")
     original_yolo_annotations_dir = os.path.join(
-        original_training_dir, "labels", "obj_Train_data"
+        original_training_dir, "label", "obj_Train_data"
     )
     original_training_images_dir = os.path.join(original_training_dir, "image")
-    original_testing_images_dir = os.path.join(original_testing_dir, "image")
+    original_testing_images_dir = os.path.join(original_testing_dir, "image val")
     # create the final dataset directories
     final_training_dir = os.path.join(
-        "C:\\Users\\medbe\\OneDrive\\Bureau\\PFA2026\\final_datasets",
+        "C:\\Users\\medbe\\OneDrive\\Bureau\\PFA2026\\final_data_sets",
         "falling_human",
         "training",
     )
     final_testing_dir = os.path.join(
-        "C:\\Users\\medbe\\OneDrive\\Bureau\\PFA2026\\final_datasets",
+        "C:\\Users\\medbe\\OneDrive\\Bureau\\PFA2026\\final_data_sets",
         "falling_human",
         "testing",
     )
@@ -203,11 +204,12 @@ def create_final_falling_human_data_set():
         os.makedirs(final_testing_dir)
     # copy the training images and annotations to the final dataset directory
     final_training_images_dir = os.path.join(final_training_dir, "data")
-    final_training_annotations_dir = os.path.join(final_training_dir, "yolo_format")
-    final_training_yolo_data_path = os.path.join(final_training_annotations_dir, "data")
-    final_testing_yolo_data_path = os.path.join(
-        final_testing_dir, "yolo_format", "data"
+    final_training_annotations_dir = os.path.join(
+        final_training_dir, "yolo_annotations"
     )
+    final_training_yolo_data_path = os.path.join(final_training_annotations_dir, "data")
+    final_testing_annotations_dir = os.path.join(final_testing_dir, "yolo_annotations")
+    final_testing_yolo_data_path = os.path.join(final_testing_annotations_dir, "data")
     if not os.path.exists(final_training_images_dir):
         os.makedirs(final_training_images_dir)
     if not os.path.exists(final_training_annotations_dir):
@@ -216,48 +218,68 @@ def create_final_falling_human_data_set():
         os.makedirs(final_training_yolo_data_path)
     if not os.path.exists(final_testing_yolo_data_path):
         os.makedirs(final_testing_yolo_data_path)
-    for file_name in os.listdir(original_training_images_dir):
+    for file_name in tqdm(
+        os.listdir(original_training_images_dir),
+        desc="Copying training images and annotations",
+    ):
+        annotation_file_name = os.path.splitext(file_name)[0] + ".txt"
+        if not os.path.exists(
+            os.path.join(original_yolo_annotations_dir, annotation_file_name)
+        ):
+            print(
+                f"Annotation file {annotation_file_name} not found for image {file_name}"
+            )
+            continue
         shutil.copy(
             os.path.join(original_training_images_dir, file_name),
             os.path.join(final_training_images_dir, file_name),
         )
-        annotation_file_name = os.path.splitext(file_name)[0] + ".txt"
         shutil.copy(
             os.path.join(original_yolo_annotations_dir, annotation_file_name),
             os.path.join(final_training_yolo_data_path, annotation_file_name),
         )
     # copy the testing images to the final dataset directory
     final_testing_images_dir = os.path.join(final_testing_dir, "data")
-    final_testing_annotations_dir = os.path.join(final_testing_dir, "yolo_format")
+    final_testing_annotations_dir = os.path.join(final_testing_dir, "yolo_annotations")
     if not os.path.exists(final_testing_images_dir):
         os.makedirs(final_testing_images_dir)
     if not os.path.exists(final_testing_annotations_dir):
         os.makedirs(final_testing_annotations_dir)
-    for file_name in os.listdir(original_testing_images_dir):
+    for file_name in tqdm(
+        os.listdir(original_testing_images_dir),
+        desc="Copying testing images and annotations",
+    ):
+        annotation_file_name = os.path.splitext(file_name)[0] + ".txt"
+        if not os.path.exists(
+            os.path.join(original_yolo_annotations_dir, annotation_file_name)
+        ):
+            print(
+                f"Annotation file {annotation_file_name} not found for image {file_name}"
+            )
+            continue
         shutil.copy(
             os.path.join(original_testing_images_dir, file_name),
             os.path.join(final_testing_images_dir, file_name),
         )
-        annotation_file_name = os.path.splitext(file_name)[0] + ".txt"
         shutil.copy(
             os.path.join(original_yolo_annotations_dir, annotation_file_name),
             os.path.join(final_testing_yolo_data_path, annotation_file_name),
         )
     # create obj_names.txt file in the final dataset directories
-    obj_names_file = os.path.join(final_training_dir, "obj.names")
+    obj_names_file = os.path.join(final_training_annotations_dir, "obj.names")
     with open(obj_names_file, "w") as f:
         f.write("human\n")
-    obj_names_file = os.path.join(final_testing_dir, "obj.names")
+    obj_names_file = os.path.join(final_testing_annotations_dir, "obj.names")
     with open(obj_names_file, "w") as f:
         f.write("human\n")
     # create coco annotations
     convert_yolo_to_coco(
-        yolo_annotation_path=final_training_yolo_data_path,
+        yolo_annotation_path=final_training_annotations_dir,
         images_path=final_training_images_dir,
         output_json_path=os.path.join(final_training_dir, "coco.json"),
     )
     convert_yolo_to_coco(
-        yolo_annotation_path=final_testing_yolo_data_path,
+        yolo_annotation_path=final_testing_annotations_dir,
         images_path=final_testing_images_dir,
         output_json_path=os.path.join(final_testing_dir, "coco.json"),
     )
@@ -266,4 +288,4 @@ def create_final_falling_human_data_set():
 if __name__ == "__main__":
     # create_flir_adas_final_data_set()
     # create_PST900_final_data_set()
-    pass
+    create_final_falling_human_data_set()
