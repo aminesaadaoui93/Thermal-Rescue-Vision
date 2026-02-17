@@ -171,6 +171,98 @@ def create_PST900_final_data_set():
     )
 
 
+def create_final_falling_human_data_set():
+    """this function will create the final falling human dataset , the yolo annotations for this dataset
+    are already created but stored badly in one directory for both training and testing images, so we will
+    need to separate the annotations for training and testing images and store them in the final dataset
+    also we will need to make sure the category is stored in obj.names.txt file in the final dataset directory
+    and we need to create coco annotations from the yolo annotations and store them"""
+    # path to the original dataset
+    original__dir = "C:\\Users\\medbe\\OneDrive\\Bureau\\PFA2026\\falling humans"
+    original_training_dir = os.path.join(original__dir, "train")
+    original_testing_dir = os.path.join(original__dir, "validation")
+    original_yolo_annotations_dir = os.path.join(
+        original_training_dir, "labels", "obj_Train_data"
+    )
+    original_training_images_dir = os.path.join(original_training_dir, "image")
+    original_testing_images_dir = os.path.join(original_testing_dir, "image")
+    # create the final dataset directories
+    final_training_dir = os.path.join(
+        "C:\\Users\\medbe\\OneDrive\\Bureau\\PFA2026\\final_datasets",
+        "falling_human",
+        "training",
+    )
+    final_testing_dir = os.path.join(
+        "C:\\Users\\medbe\\OneDrive\\Bureau\\PFA2026\\final_datasets",
+        "falling_human",
+        "testing",
+    )
+    if not os.path.exists(final_training_dir):
+        os.makedirs(final_training_dir)
+    if not os.path.exists(final_testing_dir):
+        os.makedirs(final_testing_dir)
+    # copy the training images and annotations to the final dataset directory
+    final_training_images_dir = os.path.join(final_training_dir, "data")
+    final_training_annotations_dir = os.path.join(final_training_dir, "yolo_format")
+    final_training_yolo_data_path = os.path.join(final_training_annotations_dir, "data")
+    final_testing_yolo_data_path = os.path.join(
+        final_testing_dir, "yolo_format", "data"
+    )
+    if not os.path.exists(final_training_images_dir):
+        os.makedirs(final_training_images_dir)
+    if not os.path.exists(final_training_annotations_dir):
+        os.makedirs(final_training_annotations_dir)
+    if not os.path.exists(final_training_yolo_data_path):
+        os.makedirs(final_training_yolo_data_path)
+    if not os.path.exists(final_testing_yolo_data_path):
+        os.makedirs(final_testing_yolo_data_path)
+    for file_name in os.listdir(original_training_images_dir):
+        shutil.copy(
+            os.path.join(original_training_images_dir, file_name),
+            os.path.join(final_training_images_dir, file_name),
+        )
+        annotation_file_name = os.path.splitext(file_name)[0] + ".txt"
+        shutil.copy(
+            os.path.join(original_yolo_annotations_dir, annotation_file_name),
+            os.path.join(final_training_yolo_data_path, annotation_file_name),
+        )
+    # copy the testing images to the final dataset directory
+    final_testing_images_dir = os.path.join(final_testing_dir, "data")
+    final_testing_annotations_dir = os.path.join(final_testing_dir, "yolo_format")
+    if not os.path.exists(final_testing_images_dir):
+        os.makedirs(final_testing_images_dir)
+    if not os.path.exists(final_testing_annotations_dir):
+        os.makedirs(final_testing_annotations_dir)
+    for file_name in os.listdir(original_testing_images_dir):
+        shutil.copy(
+            os.path.join(original_testing_images_dir, file_name),
+            os.path.join(final_testing_images_dir, file_name),
+        )
+        annotation_file_name = os.path.splitext(file_name)[0] + ".txt"
+        shutil.copy(
+            os.path.join(original_yolo_annotations_dir, annotation_file_name),
+            os.path.join(final_testing_yolo_data_path, annotation_file_name),
+        )
+    # create obj_names.txt file in the final dataset directories
+    obj_names_file = os.path.join(final_training_dir, "obj.names")
+    with open(obj_names_file, "w") as f:
+        f.write("human\n")
+    obj_names_file = os.path.join(final_testing_dir, "obj.names")
+    with open(obj_names_file, "w") as f:
+        f.write("human\n")
+    # create coco annotations
+    convert_yolo_to_coco(
+        yolo_annotation_path=final_training_yolo_data_path,
+        images_path=final_training_images_dir,
+        output_json_path=os.path.join(final_training_dir, "coco.json"),
+    )
+    convert_yolo_to_coco(
+        yolo_annotation_path=final_testing_yolo_data_path,
+        images_path=final_testing_images_dir,
+        output_json_path=os.path.join(final_testing_dir, "coco.json"),
+    )
+
+
 if __name__ == "__main__":
     # create_flir_adas_final_data_set()
     # create_PST900_final_data_set()
