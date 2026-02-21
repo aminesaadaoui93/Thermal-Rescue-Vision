@@ -97,7 +97,8 @@ def convert_yolo_to_coco(
     image_id = 1
 
     # Get all .txt files
-    yolo_files = [f for f in os.listdir(yolo_annotation_path) if f.endswith(".txt")]
+    yolo_files_path = os.path.join(yolo_annotation_path, "data")
+    yolo_files = [f for f in os.listdir(yolo_files_path) if f.endswith(".txt")]
 
     for yolo_file in tqdm(yolo_files, desc="Converting"):
 
@@ -131,7 +132,7 @@ def convert_yolo_to_coco(
         )
 
         # 5. Read Annotations from .txt
-        with open(os.path.join(yolo_annotation_path, yolo_file), "r") as f:
+        with open(os.path.join(yolo_files_path, yolo_file), "r") as f:
             lines = f.readlines()
 
         for line in lines:

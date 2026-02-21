@@ -249,6 +249,11 @@ def create_final_falling_human_data_set():
         os.listdir(original_testing_images_dir),
         desc="Copying testing images and annotations",
     ):
+
+        shutil.copy(
+            os.path.join(original_testing_images_dir, file_name),
+            os.path.join(final_testing_images_dir, file_name),
+        )
         annotation_file_name = os.path.splitext(file_name)[0] + ".txt"
         if not os.path.exists(
             os.path.join(original_yolo_annotations_dir, annotation_file_name)
@@ -257,10 +262,6 @@ def create_final_falling_human_data_set():
                 f"Annotation file {annotation_file_name} not found for image {file_name}"
             )
             continue
-        shutil.copy(
-            os.path.join(original_testing_images_dir, file_name),
-            os.path.join(final_testing_images_dir, file_name),
-        )
         shutil.copy(
             os.path.join(original_yolo_annotations_dir, annotation_file_name),
             os.path.join(final_testing_yolo_data_path, annotation_file_name),
