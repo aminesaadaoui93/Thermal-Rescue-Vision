@@ -223,17 +223,21 @@ def create_final_falling_human_data_set():
         desc="Copying training images and annotations",
     ):
         annotation_file_name = os.path.splitext(file_name)[0] + ".txt"
+        shutil.copy(
+            os.path.join(original_training_images_dir, file_name),
+            os.path.join(final_training_images_dir, file_name),
+        )
         if not os.path.exists(
             os.path.join(original_yolo_annotations_dir, annotation_file_name)
         ):
             print(
                 f"Annotation file {annotation_file_name} not found for image {file_name}"
             )
+            with open(
+                os.path.join(final_training_yolo_data_path, annotation_file_name), "w"
+            ) as f:
+                pass  # create an empty annotation file
             continue
-        shutil.copy(
-            os.path.join(original_training_images_dir, file_name),
-            os.path.join(final_training_images_dir, file_name),
-        )
         shutil.copy(
             os.path.join(original_yolo_annotations_dir, annotation_file_name),
             os.path.join(final_training_yolo_data_path, annotation_file_name),
@@ -261,6 +265,10 @@ def create_final_falling_human_data_set():
             print(
                 f"Annotation file {annotation_file_name} not found for image {file_name}"
             )
+            with open(
+                os.path.join(final_testing_yolo_data_path, annotation_file_name), "w"
+            ) as f:
+                pass  # create an empty annotation file
             continue
         shutil.copy(
             os.path.join(original_yolo_annotations_dir, annotation_file_name),
@@ -287,6 +295,6 @@ def create_final_falling_human_data_set():
 
 
 if __name__ == "__main__":
-    # create_flir_adas_final_data_set()
-    # create_PST900_final_data_set()
+    create_flir_adas_final_data_set()
+    create_PST900_final_data_set()
     create_final_falling_human_data_set()

@@ -55,6 +55,13 @@ def convert_coco_to_yolo(
                 f.write(category_info["name"] + "\n")
             else:
                 print(f"Category with ID {id} not found in COCO data.")
+    # making sure each image has a corresponding .txt file, even if it's empty
+    for image_info in coco_data["images"]:
+        last_name = os.path.splitext(os.path.basename(image_info["file_name"]))[0]
+        output_file_path = os.path.join(data_path, f"{last_name}.txt")
+        if not os.path.exists(output_file_path):
+            with open(output_file_path, "w") as f:
+                pass  # create an empty file
 
 
 def convert_yolo_to_coco(
