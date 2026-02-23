@@ -33,7 +33,7 @@ def merge_coco_annotations(destination_folder, coco_dicts=[]):
         "annotations": [],
     }
     annotation_id = 1
-    add_image_id = 0
+    add_image_id = 1
     for coco_dict in coco_dicts:
         for image in coco_dict["images"]:
             merged_coco["images"].append(image)
@@ -100,7 +100,7 @@ def create_final_training_set():
         os.makedirs(yolo_path)
     training_folders = [
         os.path.join(flir_folder, "training"),
-        os.path.join(destination_folder, "training"),
+        os.path.join(falling_human_folder, "training"),
         os.path.join(pst900_folder, "training"),
     ]
     coco_dicts = []
@@ -129,7 +129,7 @@ def create_final_validation_set():
         os.makedirs(yolo_path)
     validation_folders = [
         os.path.join(flir_folder, "testing"),
-        os.path.join(destination_folder, "testing"),
+        os.path.join(falling_human_folder, "testing"),
         os.path.join(pst900_folder, "testing"),
     ]
     coco_dicts = []
@@ -148,4 +148,5 @@ def create_final_validation_set():
 
 
 if __name__ == "__main__":
-    pass
+    create_final_training_set()
+    create_final_validation_set()
