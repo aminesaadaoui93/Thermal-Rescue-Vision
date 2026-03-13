@@ -1,5 +1,5 @@
 import torch
-from training_script import resnet50_adapted
+from training_scripts.resnet_training_script import resnet50_adapted
 import os
 import pandas as pd
 import numpy as np
