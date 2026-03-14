@@ -1,6 +1,8 @@
+gdown==5.2.1
+kagglehub==1.0.0
 matplotlib==3.10.8
 numpy==2.4.3
-opencv-python==4.13.0.92
+opencv_python==4.13.0.92
 pandas==3.0.1
 Pillow==12.1.1
 psutil==7.2.2
