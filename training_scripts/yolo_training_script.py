@@ -39,6 +39,17 @@ def show_training_report(results):
         plt.show()
     else:
         print("Warning: results.png not found in the save directory.")
+    F1_path = os.path.join(results.save_dir, "F1_curve.png")
+    if os.path.exists(F1_path):
+        img = cv2.imread(F1_path)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        plt.figure(figsize=(12, 8))
+        plt.imshow(img)
+        plt.axis("off")
+        plt.title("F1 Curve")
+        plt.show()
+    else:
+        print("Warning: F1_curve.png not found in the save directory.")
 
 
 # --- Usage ---
