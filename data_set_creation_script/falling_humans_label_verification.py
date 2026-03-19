@@ -26,6 +26,7 @@ for folder in images_folders:
 # cheking if each image has a corresponding label file
 missing_labels_count = 0
 duplicates_count = 0
+empty_labels_count = 0
 no_label_files_path = os.path.join(falling_humans_folder, "no_label_files")
 final_images_folder = os.path.join(falling_humans_folder, "final_images")
 final_labels_folder = os.path.join(falling_humans_folder, "final_labels")
@@ -46,6 +47,13 @@ for images_folder in images_folders:
                         )
                         duplicates_count += 1
                         break
+                    with open(label_file_path, "r") as f:
+                        if f.read().strip() == "":
+                            print(
+                                f"Empty label file found: {label_file}. Skipping {image_file}."
+                            )
+                            empty_labels_count += 1
+                            break
                     shutil.copy(
                         os.path.join(images_folder, image_file),
                         os.path.join(final_images_folder, image_file),
