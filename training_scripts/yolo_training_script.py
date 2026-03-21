@@ -61,6 +61,17 @@ if __name__ == "__main__":
     model = YOLO("yolo26m.pt")
     # if you have i5 14th generation or more 6 workers is good for training,# if you have less than that you can set it to 0 or 2
     results = model.train(
-        data=yaml_file, epochs=100, batch=8, imgsz=640, device="cuda", workers=6
+        data=yaml_file,
+        epochs=100,
+        batch=8,
+        imgsz=640,
+        device="cuda",
+        workers=6,
+        scale=0.9,
+        mixup=0.2,
+        mosaic=0.3,
+        copy_paste=0.2,
+        flipud=0.5,
+        fliplr=0.5,
     )
     show_training_report(results)
