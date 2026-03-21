@@ -73,5 +73,6 @@ if __name__ == "__main__":
         copy_paste=0.2,
         flipud=0.5,
         fliplr=0.5,
+        degree=20,
     )
     show_training_report(results)
