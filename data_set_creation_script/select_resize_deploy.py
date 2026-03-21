@@ -182,7 +182,9 @@ def create_final_falling_human_data_set():
     original__dir = "C:\\Users\\medbe\\OneDrive\\Bureau\\PFA2026\\falling humans"
     original_training_dir = os.path.join(original__dir, "train")
     original_testing_dir = os.path.join(original__dir, "validation")
-    original_yolo_annotations_dir = os.path.join(original_training_dir, "label")
+    original_yolo_annotations_dir = os.path.join(
+        original_training_dir, "label", "obj_Train_data"
+    )
     original_training_images_dir = os.path.join(original_training_dir, "image")
     original_testing_images_dir = os.path.join(original_testing_dir, "image val")
     # create the final dataset directories
