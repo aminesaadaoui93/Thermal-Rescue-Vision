@@ -7,7 +7,7 @@ import shutil
 from tqdm import tqdm
 
 
-def create_flir_adas_final_data_set(new_traning_size=2000, new_test_size=200):
+def create_flir_adas_final_data_set(new_traning_size=1000, new_test_size=200):
     """those images are already 640x512,
     so we can just copy them to the output directory without resizing or padding.
     we select a subset of thsoe images so we done need the whole dataset for training nor testing.
