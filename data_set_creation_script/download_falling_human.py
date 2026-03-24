@@ -8,7 +8,7 @@ path = os.path.abspath("./")
 
 file_id = "1wMgfZTzfF7YF9A9kDTWaX2Zkpbmh5A19"
 url = f"https://drive.google.com/uc?id={file_id}"
-output = os.path.join(path, "falling human.zip")
+output = os.path.join(path, "falling humans.zip")
 gdown.download(url, output, quiet=False, fuzzy=True)
 if not os.path.exists(output):
     raise Exception(f"Failed to download the dataset. from {url}")

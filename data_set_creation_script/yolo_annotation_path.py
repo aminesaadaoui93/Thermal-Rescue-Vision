@@ -21,8 +21,9 @@ os.makedirs(validation_labels_path, exist_ok=True)
 # creating .yaml file
 yaml_content = {
     "path": main_folder,
-    "train": "/training/images",
-    "val": "/validation/images",
+    "train": "training/images",
+    "val": "validation/images",
+    "test": "test/images",
     "nc": 1,  # number of classes
     "names": ["human"],  # class names
 }
@@ -73,3 +74,6 @@ for filename in tqdm(
         )
     else:
         print(f"Label file {label_name} not found for image {filename}")
+# coping test images and labels from falling human dataset
+test_source_path = os.path.abspath("./falling humans")
+shutil.copytree(test_source_path, os.path.join(main_folder, "test"), dirs_exist_ok=True)
