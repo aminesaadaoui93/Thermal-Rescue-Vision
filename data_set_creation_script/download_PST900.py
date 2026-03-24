@@ -2,7 +2,8 @@ import os
 import gdown
 import zipfile
 
-data_path = os.path.abspath("./")
+data_path = os.path.abspath("./real_data")
+os.makedirs(data_path, exist_ok=True)
 
 
 def download_PST900():
